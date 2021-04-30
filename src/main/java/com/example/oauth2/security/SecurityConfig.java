@@ -28,23 +28,24 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.authorizeRequests()
-                    .antMatchers("/", "/oauth2/**", "/login/**", "/css/**",
-                            "/images/**", "/js/**", "/console/**", "/favicon.ico/**")
-                    .permitAll()
-                    .antMatchers("/facebook").hasAuthority(FACEBOOK.getRoleType())
-                    .antMatchers("/google").hasAuthority(GOOGLE.getRoleType())
-                    .antMatchers("/kakao").hasAuthority(KAKAO.getRoleType())
-                    .antMatchers("/naver").hasAuthority(NAVER.getRoleType())
-                    .anyRequest().authenticated()
+                .antMatchers("/", "/oauth2/**", "/login/**", "/css/**",
+                        "/images/**", "/js/**", "/console/**", "/favicon.ico/**", "/loginFailure/**"
+                        , "/loginSuccess/**", "/hello/**")
+                .permitAll()
+                .antMatchers("/facebook").hasAuthority(FACEBOOK.getRoleType())
+                .antMatchers("/google").hasAuthority(GOOGLE.getRoleType())
+                .antMatchers("/kakao").hasAuthority(KAKAO.getRoleType())
+                .antMatchers("/naver").hasAuthority(NAVER.getRoleType())
+                .anyRequest().authenticated()
                 .and()
-                    .oauth2Login()
-                    .userInfoEndpoint().userService(new CustomOAuth2UserService())  // 네이버 USER INFO의 응답을 처리하기 위한 설정
+                .oauth2Login()
+                .userInfoEndpoint().userService(new CustomOAuth2UserService())  // 네이버 USER INFO의 응답을 처리하기 위한 설정
                 .and()
-                    .defaultSuccessUrl("/loginSuccess")
-                    .failureUrl("/loginFailure")
+                .defaultSuccessUrl("/loginSuccess")
+                .failureUrl("/loginFailure")
                 .and()
-                    .exceptionHandling()
-                    .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login"));
+                .exceptionHandling()
+                .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login"));
     }
 
     @Bean
@@ -61,10 +62,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .collect(Collectors.toList());
 
         registrations.add(CustomOAuth2Provider.KAKAO.getBuilder("kakao")
-                    .clientId(kakaoClientId)
-                    .clientSecret(kakaoClientSecret)
-                    .jwkSetUri("temp")
-                    .build());
+                .clientId(kakaoClientId)
+                .clientSecret(kakaoClientSecret)
+                .jwkSetUri("temp")
+                .build());
 
         registrations.add(CustomOAuth2Provider.NAVER.getBuilder("naver")
                 .clientId(naverClientId)
@@ -75,7 +76,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     private ClientRegistration getRegistration(OAuth2ClientProperties clientProperties, String client) {
-        if("google".equals(client)) {
+        if ("google".equals(client)) {
             OAuth2ClientProperties.Registration registration = clientProperties.getRegistration().get("google");
             return CommonOAuth2Provider.GOOGLE.getBuilder(client)
                     .clientId(registration.getClientId())
@@ -84,7 +85,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .build();
         }
 
-        if("facebook".equals(client)) {
+        if ("facebook".equals(client)) {
             OAuth2ClientProperties.Registration registration = clientProperties.getRegistration().get("facebook");
             return CommonOAuth2Provider.FACEBOOK.getBuilder(client)
                     .clientId(registration.getClientId())
