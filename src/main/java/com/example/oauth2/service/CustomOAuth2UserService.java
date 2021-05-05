@@ -109,8 +109,9 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         return new DefaultOAuth2User(authorities, userAttributes, userNameAttributeName);
     }
 
-    // 네이버는 HTTP response body에 response 안에 id 값을 포함한 유저정보를 넣어주므로 유저정보를 빼내기 위한 작업을 함
     private Map<String, Object> getUserAttributes(ResponseEntity<Map<String, Object>> response) {
+    // 인증 후 데이터를 빼오기 위한 부분.
+    // 네이버는 HTTP response body에 response 안에 id 값을 포함한 유저정보를 넣어주므로 유저정보를 빼내기 위한 작업을 함
         Map<String, Object> userAttributes = response.getBody();
         if(userAttributes.containsKey("response")) {
             LinkedHashMap responseData = (LinkedHashMap)userAttributes.get("response");
